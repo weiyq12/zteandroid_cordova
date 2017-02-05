@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>设备相关信息</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady device=" + device);
+        }
+
+        function getDeviceInfo()
+        {
+            var cordova = device.cordova;
+            var model = device.model;
+            var platform = device.platform;
+            var uuid = device.uuid;
+            var version = device.version;
+            var manufacturer = device.manufacturer;
+            var isVirtual = device.isVirtual;
+            var serial = device.serial;
+
+            document.getElementById("display_content").innerHTML = "手机设备相关信息为："
+                + "<br />cordova=" + cordova
+                + "<br />model=" + model
+                + "<br />platform=" + platform
+                + "<br />uuid=" + uuid
+                + "<br />version=" + version
+                + "<br />manufacturer=" + manufacturer
+                + "<br />isVirtual=" + isVirtual
+                + "<br />serial=" + serial;
+        }
+
+    </script>
+</head>
+<body>
+<h1>设备相关信息</h1>
+<input type="button" style="width: 100%; height: 45px" value="获取设备信息" onclick="getDeviceInfo()">
+<div id="display_content"></div>
+</body>
+</html>

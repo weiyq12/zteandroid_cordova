@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>手机方向传感器</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady navigator.compass=" + navigator.compass);
+        }
+
+        function getCurrHeading()
+        {
+            function onSuccess(heading) {
+                document.getElementById("display_content").innerHTML += "<br />"
+                    + 'Heading: ' + heading.magneticHeading;
+            };
+
+            function onError(error) {
+                alert('CompassError: ' + error.code);
+            };
+
+            navigator.compass.getCurrentHeading(onSuccess, onError);
+        }
+
+        var watchID = null;
+        function myWatch() {
+            function onSuccess(heading) {
+                document.getElementById("display_content").innerHTML += "<br />"
+                        + 'Heading: ' + heading.magneticHeading;
+            };
+
+            function onError(compassError) {
+                alert('Compass error: ' + compassError.code);
+            };
+
+            var options = {
+                frequency: 3000
+            }; // Update every 3 seconds
+
+            watchID = navigator.compass.watchHeading(onSuccess, onError, options);
+        }
+
+        function myClean() {
+            if (watchID)
+            {
+                navigator.compass.clearWatch(watchID);
+            }
+            watchID = null;
+
+            alert("停止观察完成!");
+        }
+
+    </script>
+</head>
+<body>
+<h1>手机方向传感器</h1>
+<input type="button" style="width: 100%; height: 45px" value="获取方向" onclick="getCurrHeading()">
+<input type="button" style="width: 100%; height: 45px" value="观察方向" onclick="myWatch()">
+<input type="button" style="width: 100%; height: 45px" value="停止观察" onclick="myClean()">
+<div id="display_content"></div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>通知提示框</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady navigator.notification=" + navigator.notification);
+        }
+
+        function myalert() {
+            function alertDismissed() {
+                // do something
+            }
+
+            navigator.notification.alert(
+                    'You are the winner!',  // message
+                    alertDismissed,         // callback
+                    'Game Over',            // title
+                    'Done'                  // buttonName
+            );
+        }
+
+        function myconfirm() {
+            function onConfirm(buttonIndex) {
+                alert('You selected button ' + buttonIndex);
+            }
+
+            navigator.notification.confirm(
+                    'You are the winner!', // message
+                    onConfirm,            // callback to invoke with index of button pressed
+                    'Game Over',           // title
+                    ['Restart','Exit']     // buttonLabels
+            );
+        }
+
+        function myPrompt() {
+            function onPrompt(results) {
+                alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
+            }
+
+            navigator.notification.prompt(
+                    'Please enter your name',  // message
+                    onPrompt,                  // callback to invoke
+                    'Registration',            // title
+                    ['Ok','Exit'],             // buttonLabels
+                    'Jane Doe'                 // defaultText
+            );
+        }
+
+        function mybeep() {
+            navigator.notification.beep(2);
+        }
+
+    </script>
+</head>
+<body>
+<h1>通知提示框</h1>
+<input type="button" style="width: 100%; height: 45px" value="警告框" onclick="myalert()" />
+<input type="button" style="width: 100%; height: 45px" value="确认框" onclick="myconfirm()" />
+<input type="button" style="width: 100%; height: 45px" value="提示输入框" onclick="myPrompt()" />
+<input type="button" style="width: 100%; height: 45px" value="播放提示音" onclick="mybeep()" />
+</body>
+</html>

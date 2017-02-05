@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>文件操作</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady cordova.file=" + cordova.file);
+        }
+
+        function myCommonFilePath() {
+
+            alert("(1) applicationDirectory=" + cordova.file.applicationDirectory + "\n"
+                    + "(2) applicationStorageDirectory=" + cordova.file.applicationStorageDirectory + "\n"
+                    + "(3) dataDirectory=" + cordova.file.dataDirectory + "\n"
+                    + "(4) cacheDirectory=" + cordova.file.cacheDirectory + "\n"
+                    + "(5) externalApplicationStorageDirectory=" + cordova.file.externalApplicationStorageDirectory + "\n"
+                    + "(6) externalDataDirectory" + cordova.file.externalDataDirectory + "\n"
+                    + "(7) externalCacheDirectory" + cordova.file.externalCacheDirectory + "\n"
+                    + "(8) externalRootDirectory" + cordova.file.externalRootDirectory
+                );
+        }
+
+        function nativePathConvert() {
+            console.log("==========进入======>")
+            // file:///storeage/emulated/0/test.png  若此路径文件不存在也无法转换
+            resolveLocalFileSystemURL(cordova.file.applicationDirectory + 'test.jpg', function(entry) {
+                var cdvfilePath = entry.toInternalURL();
+                alert("转换成cdvfile路径为:" + cdvfilePath);
+                document.getElementById("myImage").src = cdvfilePath;
+            });
+            console.log("==========结束======>")
+        }
+
+        function cdvfileConver() {
+            console.log("==========进入======>")
+            resolveLocalFileSystemURL('cdvfile://localhost/sdcard/test.png', function(entry) {
+                var nativePath = entry.toURL();
+                alert("转换成本地路径为: " + nativePath);
+            });
+            console.log("==========结束======>")
+        }
+
+        function myCreateFile() {
+            window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fs) {
+
+                console.log('file system open: ' + fs.name);
+                fs.root.getFile("newPersistentFile.txt", { create: true, exclusive: false }, function (fileEntry) {
+
+                    console.log("fileEntry is file? " + fileEntry.isFile.toString());
+                    // fileEntry.name == 'someFile.txt'
+                    // fileEntry.fullPath == '/someFile.txt'
+                    writeFile(fileEntry, "hello world");
+                    alert("创建文件成功! path=" + fileEntry.toURL());
+                }, function (e) {
+                    alert("创建文件失败!" + e.toString());
+                });
+
+            }, function (e) {
+                alert("打开文件目录失败!" + e.toString());
+            });
+        }
+
+        function myTmpFile() {
+            window.requestFileSystem(window.TEMPORARY, 5 * 1024 * 1024, function (fs) {
+
+                console.log('file system open: ' + fs.name);
+                createFile(fs.root, "newTempFile.txt", false);
+
+            }, function (e) {
+                alert("打开临时文件目录失败!" + e.toString())
+            });
+        }
+
+        function myDataFile() {
+            // 参数可以是cordova.file.dataDirectory这种系统定义的,还可以 cdvfile:xxx 自定义格式路径
+            window.resolveLocalFileSystemURL(cordova.file.dataDirectory, function (dirEntry) {
+                console.log('file system open: ' + dirEntry.name);
+                var isAppend = true; // 追加内容
+                createFile(dirEntry, "fileToAppend.txt", isAppend);
+            }, function (e) {
+                alert("创建数据文件失败!" + e.toString());
+            });
+        }
+
+        function myImgReadAndDisplay() {
+            window.resolveLocalFileSystemURL("cdvfile://localhost/assets/test.jpg", function (imgEntry) {
+                console.log('imgEntry.toURL: ' + imgEntry.toURL());
+                readBinaryFile(imgEntry);
+            }, function (e) {
+                alert("读取图片文件失败!" + e.toString());
+            });
+        }
+
+        function createFile(dirEntry, fileName, isAppend) {
+            // Creates a new file or returns the file if it already exists.
+            dirEntry.getFile(fileName, {create: true, exclusive: false}, function (fileEntry) {
+
+                writeFile(fileEntry, "hello ZTE! ", isAppend);
+
+            }, function (e) {
+                alert("创建临时文件失败!" + e.toString())
+            });
+        }
+
+        function writeFile(fileEntry, dataObj) {
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter(function (fileWriter) {
+                fileWriter.onwriteend = function() {
+                    console.log("Successful file write...");
+                    readFile(fileEntry);
+                };
+
+                fileWriter.onerror = function (e) {
+                    console.log("Failed file write: " + e.toString());
+                };
+
+                // If data object is not passed in,
+                // create a new Blob instead.
+                if (!dataObj) {
+                    dataObj = new Blob(['some file data'], { type: 'text/plain' });
+                }
+
+                fileWriter.write(dataObj);
+            });
+        }
+
+        function writeFile(fileEntry, dataObj, isAppend) {
+            // Create a FileWriter object for our FileEntry (log.txt).
+            fileEntry.createWriter(function (fileWriter) {
+
+                fileWriter.onwriteend = function() {
+                    console.log("Successful file read...");
+                    readFile(fileEntry);
+                };
+
+                fileWriter.onerror = function (e) {
+                    console.log("Failed file read: " + e.toString());
+                };
+
+                // If we are appending data to file, go to the end of the file.
+                if (isAppend) {
+                    try {
+                        fileWriter.seek(fileWriter.length); // 指针移到最后再开始写即是追加内容
+                    }
+                    catch (e) {
+                        console.log("file doesn't exist!");
+                    }
+                }
+                fileWriter.write(dataObj);
+            });
+        }
+
+        function readFile(fileEntry) {
+
+            fileEntry.file(function (file) {
+                var reader = new FileReader();
+
+                reader.onloadend = function() {
+                    console.log("Successful file read: " + this.result);
+                    //displayFileData(fileEntry.fullPath + ": " + this.result);
+                    alert("读出文件成功!" + fileEntry.fullPath + ": " + this.result)
+                };
+
+                reader.readAsText(file);
+
+            }, function () {
+                alert("读取文件失败")
+            });
+        }
+
+        function readBinaryFile(fileEntry) {
+
+            fileEntry.file(function (file) {
+                var reader = new FileReader();
+
+                reader.onloadend = function() {
+
+                    console.log("Successful file write: " + this.result);
+                    // displayFileData(fileEntry.fullPath + ": " + this.result);
+                    alert("读取图片成功!" + fileEntry.fullPath + ": " + this.result);
+
+                    var blob = new Blob([new Uint8Array(this.result)], { type: "image/png" });
+                    displayImage(blob);
+                };
+
+                reader.readAsArrayBuffer(file);
+
+            }, function (e) {
+                alert("读取图片失败!" + e.toString());
+            });
+        }
+
+        function displayImage(blob) {
+
+            // Displays image if result is a valid DOM string for an image.
+            var elem = document.getElementById('myImage');
+            // Note: Use window.URL.revokeObjectURL when finished with image.
+            elem.src = window.URL.createObjectURL(blob);
+            alert("展示完成!");
+        }
+
+        function getSampleFile(dirEntry) {
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://cordova.apache.org/static/img/cordova_bot.png', true);
+            xhr.responseType = 'blob';
+
+            xhr.onload = function() {
+                if (this.status == 200) {
+
+                    var blob = new Blob([this.response], { type: 'image/png' });
+                    saveFile(dirEntry, blob, "downloadedImage.png");
+                }
+            };
+            xhr.send();
+        }
+
+        function createDirectory(rootDirEntry) {
+            rootDirEntry.getDirectory('NewDirInRoot', { create: true }, function (dirEntry) {
+                dirEntry.getDirectory('images', { create: true }, function (subDirEntry) {
+
+                    createFile(subDirEntry, "fileInNewSubDir.txt");
+
+                }, onErrorGetDir);
+            }, onErrorGetDir);
+        }
+
+    </script>
+</head>
+<body>
+<h1>文件操作</h1>
+<input type="button" style="width: 100%; height: 45px" value="常用文件路径" onclick="myCommonFilePath()" />
+<input type="button" style="width: 100%; height: 45px" value="本地路径转cdvfile" onclick="nativePathConvert()" />
+<input type="button" style="width: 100%; height: 45px" value="cdvfile转本地路" onclick="cdvfileConver()" />
+<input type="button" style="width: 100%; height: 45px" value="创建并读取正式文件" onclick="myCreateFile()" />
+<input type="button" style="width: 100%; height: 45px" value="创建并读取临时文件" onclick="myTmpFile()" />
+<input type="button" style="width: 100%; height: 45px" value="创建并追加内容到数据文件" onclick="myDataFile()" />
+<input type="button" style="width: 100%; height: 45px" value="二进制图片的读取与展示" onclick="myImgReadAndDisplay()" />
+<div align="center">
+    <img id="myImage" width="100px" height="100px">
+</div>
+</body>
+</html>

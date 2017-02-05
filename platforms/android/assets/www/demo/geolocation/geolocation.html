@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>定位信息</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady navigator.geolocation=" + navigator.geolocation);
+        }
+
+        function myCurrPosition() {
+            // onSuccess Callback
+            // This method accepts a Position object, which contains the
+            // current GPS coordinates
+            //
+            var onSuccess = function(position) {
+                alert('Latitude: '          + position.coords.latitude          + '\n' +
+                        'Longitude: '         + position.coords.longitude         + '\n' +
+                        'Altitude: '          + position.coords.altitude          + '\n' +
+                        'Accuracy: '          + position.coords.accuracy          + '\n' +
+                        'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+                        'Heading: '           + position.coords.heading           + '\n' +
+                        'Speed: '             + position.coords.speed             + '\n' +
+                        'Timestamp: '         + position.timestamp                + '\n');
+            };
+
+            // onError Callback receives a PositionError object
+            //
+            function onError(error) {
+                alert('code: '    + error.code    + '\n' +
+                        'message: ' + error.message + '\n');
+            }
+
+            document.getElementById("display_content").innerHTML += "<br />myCurrPosition begin";
+
+            navigator.geolocation.getCurrentPosition(onSuccess, onError, { timeout: 5000 });
+
+            document.getElementById("display_content").innerHTML += "<br />myCurrPosition end";
+        }
+
+        var watchID = null;
+        function myWatchPosition() {
+            // onSuccess Callback
+            //   This method accepts a `Position` object, which contains
+            //   the current GPS coordinates
+            //
+            function onSuccess(position) {
+                var element = document.getElementById('display_content');
+                element.innerHTML += '<hr /><br />Latitude: '  + position.coords.latitude      + '<br />' +
+                        'Longitude: ' + position.coords.longitude     + '<br />' +
+                        '<hr />';
+            }
+
+            // onError Callback receives a PositionError object
+            //
+            function onError(error) {
+                alert('code: '    + error.code    + '\n' +
+                        'message: ' + error.message + '\n');
+            }
+
+            // Options: throw an error if no update is received every 30 seconds.
+            //
+            document.getElementById("display_content").innerHTML += "<br />myWatchPosition begin";
+
+            watchID = navigator.geolocation.watchPosition(onSuccess, onError, { maximumAge: 3000, timeout: 5000, enableHighAccuracy: true });
+
+            document.getElementById("display_content").innerHTML += "<br />myWatchPosition end. watchID=" + watchID;
+        }
+        
+        function myClearPosition() {
+            document.getElementById("display_content").innerHTML += "<br />myClearPosition begin watchID=" + watchID;
+
+            if (null != watchID)
+            {
+                navigator.geolocation.clearWatch(watchID);
+                watchID = null;
+            }
+
+            document.getElementById("display_content").innerHTML += "<br />myClearPosition end. watchID=" + watchID;
+        }
+
+    </script>
+</head>
+</head>
+<body>
+<h1>定位信息</h1>
+<input type="button" style="width: 100%; height: 45px" value="获取当前位置信息" onclick="myCurrPosition()">
+<input type="button" style="width: 100%; height: 45px" value="开始观察位置信息变化" onclick="myWatchPosition()">
+<input type="button" style="width: 100%; height: 45px" value="结束观察位置信息变化" onclick="myClearPosition()">
+<br /><br />
+<div id="display_content">操作及监听到的信息: </div>
+</body>
+</html>

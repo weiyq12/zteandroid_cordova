@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>打印控制台日志</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady console=" + console);
+        }
+
+        function printLog()
+        {
+            console.log("console.log works well");
+        }
+
+        function printDebugLog()
+        {
+            console.debug("debug log works well");
+        }
+
+        function printInfoLog()
+        {
+            console.info("info log works well");
+        }
+
+        function printWarnLog()
+        {
+            console.warn("info log works well");
+        }
+
+        function printErrorLog()
+        {
+            console.error("error log works well");
+        }
+
+    </script>
+</head>
+<body>
+    <h1>打印控制台日志</h1>
+    <input type="button" style="width: 100%; height: 45px" value="打印日志" onclick="printLog()">
+    <input type="button" style="width: 100%; height: 45px" value="打印Debug级别日志" onclick="printDebugLog()">
+    <input type="button" style="width: 100%; height: 45px" value="打印Info级别日志" onclick="printInfoLog()">
+    <input type="button" style="width: 100%; height: 45px" value="打印Warn级别日志" onclick="printWarnLog()">
+    <input type="button" style="width: 100%; height: 45px" value="打印Error级别日志" onclick="printErrorLog()">
+</body>
+</html>

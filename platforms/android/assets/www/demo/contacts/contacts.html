@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>手机联系人</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady navigator.contacts=" + navigator.contacts);
+        }
+
+        function createContact()
+        {
+            var phoneNumbers = [];
+            phoneNumbers[0] = new ContactField('work', '768-555-1234', false);
+            phoneNumbers[1] = new ContactField('mobile', '10086', true); // preferred number
+            phoneNumbers[2] = new ContactField('home', '203-555-7890', false);
+
+            var myContact = navigator.contacts.create({"displayName":"张三", "name":"三儿", "nickname":"小三", "phoneNumbers":phoneNumbers});
+            myContact.save();
+            alert("myContact=" + JSON.stringify(myContact));
+        }
+
+        function findContacts()
+        {
+            function onSuccess(contacts) {
+                alert('Found ' + contacts.length + ' contacts.');
+            };
+
+            function onError(contactError) {
+                alert('onError!');
+            };
+
+            // find all contacts with 'TestUser' in any name field
+            var options      = new ContactFindOptions();
+            options.filter   = "张三";
+            options.multiple = true;
+            options.desiredFields = [navigator.contacts.fieldType.id];
+            options.hasPhoneNumber = false;
+            var fields = [navigator.contacts.fieldType.displayName, navigator.contacts.fieldType.name];
+            navigator.contacts.find(fields, onSuccess, onError, options);
+        }
+
+        function myPickContacts() {
+            navigator.contacts.pickContact(function(contact){
+                alert('The following contact has been selected:' + JSON.stringify(contact));
+                myContact = contact;
+            },function(err){
+                alert('Error: ' + err);
+            });
+        }
+
+        function myCloneContact() {
+            if (null == myContact)
+            {
+                alert("请先点击【选择联系人】获取个联系人后再操作");
+                return;
+            }
+
+            var clonedContace = myContact.clone();
+            alert("oldContact=" + JSON.stringify(myContact)
+                + "\n\n"
+                + "newContact=" + JSON.stringify(clonedContace));
+        }
+
+        var myContact = null;
+        function myDelContace() {
+            function onSuccess() {
+                alert("Remove Success");
+            };
+
+            function onError(contactError) {
+                alert("Remove Error = " + contactError.code);
+            };
+
+            if (null == myContact)
+            {
+                alert("请先点击【选择联系人】获取个联系人后再操作");
+                return;
+            }
+
+            // remove the contact from the device
+            myContact.remove(onSuccess, onError);
+        }
+
+    </script>
+</head>
+<body>
+<h1>手机联系人</h1>
+<input type="button" style="width: 100%; height: 45px" value="新增联系人" onclick="createContact()">
+<input type="button" style="width: 100%; height: 45px" value="查找联系人" onclick="findContacts()">
+<input type="button" style="width: 100%; height: 45px" value="选择联系人" onclick="myPickContacts()">
+<input type="button" style="width: 100%; height: 45px" value="复制联系人" onclick="myCloneContact()">
+<input type="button" style="width: 100%; height: 45px" value="删除联系人" onclick="myDelContace()">
+</body>
+</html>

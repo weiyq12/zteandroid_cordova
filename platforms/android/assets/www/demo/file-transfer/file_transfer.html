@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>文件传输</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady FileTransfer=" + FileTransfer);
+        }
+
+        function myUploadFile() {
+            function success(r) {
+                console.log("Code = " + r.responseCode);
+                console.log("Response = " + r.response);
+                console.log("Sent = " + r.bytesSent);
+                alert("上传成功,总共发送字节数:" + r.bytesSent);
+            }
+
+            function fail(error) {
+                //alert("An error has occurred: Code = " + error.code);
+                console.log("upload error source " + error.source);
+                console.log("upload error target " + error.target);
+                alert("上传失败,错误码:" + error.code);
+            }
+
+            var fileURL = 'cdvfile://localhost/sdcard/test.jpg';
+            //var uri = encodeURI("http://some.server.com/upload.php");
+            var uri = encodeURI("http://192.168.1.105:8080");
+
+            var options = new FileUploadOptions();
+            options.fileKey="file";
+            options.fileName=fileURL.substr(fileURL.lastIndexOf('/')+1);
+            options.mimeType="text/plain";
+
+            var headers={'headerParam':'headerValue'};
+
+            options.headers = headers;
+
+            var ft = new FileTransfer();
+            ft.onprogress = function(progressEvent) {
+                if (progressEvent.lengthComputable) {
+                    loadingStatus.setPercentage(progressEvent.loaded / progressEvent.total);
+                } else {
+                    loadingStatus.increment();
+                }
+            };
+            ft.upload(fileURL, uri, success, fail, options);
+        }
+
+        function myDownloadFile() {
+            var fileTransfer = new FileTransfer();
+            var uri = encodeURI("https://www.baidu.com/img/baidu_jgylogo3.gif");
+            var fileURL = 'cdvfile://localhost/sdcard/test.gif';
+
+            fileTransfer.download(
+                    uri,
+                    fileURL,
+                    function(entry) {
+                        console.log("download complete: " + entry.toURL());
+                        alert("下载成功!" + entry.toURL());
+                    },
+                    function(error) {
+                        console.log("download error source " + error.source);
+                        console.log("download error target " + error.target);
+                        console.log("download error code" + error.code);
+                        allert("下载失败!" + error.code);
+                    },
+                    false,
+                    {
+                        headers: {
+                            "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
+                        }
+                    }
+            );
+        }
+
+        function myAbort() {
+            // !! Assumes variable fileURL contains a valid URL to a text file on the device,
+            //    for example, cdvfile://localhost/persistent/path/to/file.txt
+
+            var win = function(r) {
+                console.log("Should not be called.");
+                alert("上传成功!")
+            }
+
+            var fail = function(error) {
+                // error.code == FileTransferError.ABORT_ERR
+                console.log("upload error code " + error.code);
+                console.log("upload error source " + error.source);
+                console.log("upload error target " + error.target);
+                if (error.code == FileTransferError.ABORT_ERR)
+                {
+                    alert("用户取消了");
+                    return;
+                }
+                else
+                {
+                    alert("上传失败!")
+                }
+            }
+
+            var options = new FileUploadOptions();
+            options.fileKey="file";
+            options.fileName="myphoto.jpg";
+            options.mimeType="image/jpeg";
+
+            var ft = new FileTransfer();
+            ft.upload('cdvfile://localhost/sdcard/test.jpg'
+                    , encodeURI("http://some.server.com/upload.php")
+                    , win
+                    , fail
+                    , options);
+            ft.abort();
+        }
+
+    </script>
+</head>
+<body>
+<h1>文件传输</h1>
+<input type="button" style="width: 100%; height: 45px" value="上传文件" onclick="myUploadFile()" />
+<input type="button" style="width: 100%; height: 45px" value="下载文件" onclick="myDownloadFile()" />
+<input type="button" style="width: 100%; height: 45px" value="取消传输" onclick="myAbort()" />
+</body>
+</html>

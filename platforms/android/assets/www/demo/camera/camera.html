@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>手机拍照</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady navigator.camera=" + navigator.camera);
+        }
+        
+        function startCapture() {
+            navigator.camera.getPicture(onSuccess, onFail, {
+                quality: 25,
+                destinationType: Camera.DestinationType.DATA_URL,
+                sourceType: Camera.PictureSourceType.CAMERA,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                cameraDirection: Camera.Direction.FRONT,
+                targetWidth: 100,
+                targetHeight: 100
+            });
+
+            function onSuccess(imageData) {
+                var image = document.getElementById('myImage');
+                image.src = "data:image/jpeg;base64," + imageData;
+            }
+
+            function onFail(message) {
+                alert('Failed because: ' + message);
+            }
+        }
+
+        function selectPicture() {
+            navigator.camera.getPicture(onSuccess, onFail, {
+                quality: 25,
+                destinationType: Camera.DestinationType.FILE_URI,
+                sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
+                allowEdit: true,
+                encodingType: Camera.EncodingType.JPEG,
+                cameraDirection: Camera.Direction.BACK,
+                targetWidth: 100,
+                targetHeight: 100
+            });
+
+            function onSuccess(imageData) {
+                alert("select pic path: " + imageData);
+            }
+
+            function onFail(message) {
+                alert('Failed because: ' + message);
+            }
+        }
+
+    </script>
+</head>
+<body>
+
+<h1>手机拍照</h1>
+
+<div align="center">
+    <img id="myImage" width="100px" height="100px">
+</div>
+<br />
+<div>
+    <input type="button" style="width: 100%; height: 45px" value="点击开始拍照" onclick="startCapture()">
+    <input type="button" style="width: 100%; height: 45px" value="点击选择图片" onclick="selectPicture()">
+</div>
+
+</body>
+</html>

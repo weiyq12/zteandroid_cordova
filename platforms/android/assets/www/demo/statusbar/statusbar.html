@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>状态栏</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady StatusBar=" + StatusBar);
+        }
+
+        function myColor() {
+            StatusBar.backgroundColorByName("red");
+            StatusBar.backgroundColorByHexString("#F00"); // => #FF0000
+        }
+
+        function myShow() {
+            StatusBar.show();
+        }
+
+        function myHide() {
+            if (StatusBar.isVisible)
+            {
+                StatusBar.hide();
+            }
+        }
+
+    </script>
+</head>
+<body>
+<h1>启动画面</h1>
+<input type="button" style="width: 100%; height: 45px" value="设置背景色" onclick="myColor()">
+<input type="button" style="width: 100%; height: 45px" value="显示状态栏" onclick="myShow()">
+<input type="button" style="width: 100%; height: 45px" value="隐藏状态栏" onclick="myHide()">
+</body>
+</html>

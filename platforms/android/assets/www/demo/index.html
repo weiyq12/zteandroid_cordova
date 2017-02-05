@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <!--
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+        <link rel="stylesheet" type="text/css" href="../css/index.css">
+        -->
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        <style>
+            input {width: 100%; height: 35px; text-align:center; margin:auto; font-size: 16px}
+        </style>
+        <title>[云警务]轻应用JS接口示例</title>
+    </head>
+    <body>
+        <h1>[云警务]JS接口示例</h1>
+        <br />
+        <input type="button" value="控制台日志输出" onclick="location.href='console/console.html'">
+        <input type="button" value="电池状态监听" onclick="location.href='battery-status/battery_status.html'">
+        <input type="button" value="手机拍照" onclick="location.href='camera/camera.html'">
+        <input type="button" value="手机联系人" onclick="location.href='contacts/contacts.html'">
+        <input type="button" value="设备相关信息" onclick="location.href='device/device.html'">
+        <input type="button" value="加速传感器" onclick="location.href='device-motion/device_motion.html'">
+        <input type="button" value="方向传感器" onclick="location.href='device-orientation/device_orientation.html'">
+        <input type="button" value="通知提示框" onclick="location.href='dialogs/dialogs.html'">
+        <input type="button" value="文件操作" onclick="location.href='file/file.html'">
+        <input type="button" value="文件传输" onclick="location.href='file-transfer/file_transfer.html'">
+        <input type="button" value="地理位置信息" onclick="location.href='geolocation/geolocation.html'">
+        <input type="button" value="网络状况信息" onclick="location.href='network-information/network_information.html'">
+        <input type="button" value="启动画面" onclick="location.href='splashscreen/splashscreen.html'">
+        <input type="button" value="状态栏" onclick="location.href='statusbar/statusbar.html'">
+    </body>
+</html>

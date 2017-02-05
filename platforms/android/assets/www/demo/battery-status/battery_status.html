@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>电池状态监听</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceready, false);
+        function onDeviceready() {
+            alert("onDeviceReady navigator.battery=" + navigator.battery);
+            window.addEventListener("batterystatus", onBatteryStatus, false);
+            window.addEventListener("batterylow", onBatteryLow, false);
+            window.addEventListener("batterycritical", onBatteryCritical, false);
+        }
+
+        function onBatteryStatus(status) {
+            document.getElementById("display_content").innerHTML += "<br />"
+                    + "Level: " + status.level + ", isPlugged: " + status.isPlugged
+        }
+
+        function onBatteryLow(status) {
+            document.getElementById("display_content").innerHTML += "<br />"
+                    + "Battery Level Low " + status.level + "%"
+        }
+
+        function onBatteryCritical(status) {
+            document.getElementById("display_content").innerHTML += "<br />"
+                    + "Battery Level Critical " + status.level + "%\nRecharge Soon!"
+        }
+
+    </script>
+</head>
+<body>
+<h1>电池状态监听</h1>
+<div id="display_content">监听到的信息: </div>
+</body>
+</html>

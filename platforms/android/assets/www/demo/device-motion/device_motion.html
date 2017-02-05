@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>加速传感器</title>
+    <script type="text/javascript" src="../zte/core.js"></script>
+    <script type="text/javascript">
+
+        document.addEventListener("deviceready", onDeviceReady, false);
+        function onDeviceReady() {
+            alert("onDeviceReady navigator.accelerometer=" + navigator.accelerometer);
+        }
+
+        function myCurr()
+        {
+            function onSuccess(acceleration) {
+                document.getElementById("display_content").innerHTML += "<br />" +
+                        'Acceleration X: ' + acceleration.x + '<br />' +
+                        'Acceleration Y: ' + acceleration.y + '<br />' +
+                        'Acceleration Z: ' + acceleration.z + '<br />' +
+                        'Timestamp: '      + acceleration.timestamp + '<br />';
+            }
+
+            function onError() {
+                alert('onError!');
+            }
+
+            navigator.accelerometer.getCurrentAcceleration(onSuccess, onError);
+        }
+
+        var watchID = null;
+        function myWatch() {
+            function onSuccess(acceleration) {
+                document.getElementById("display_content").innerHTML += "<br />" +
+                        'Acceleration X: ' + acceleration.x + '<br />' +
+                        'Acceleration Y: ' + acceleration.y + '<br />' +
+                        'Acceleration Z: ' + acceleration.z + '<br />' +
+                        'Timestamp: '      + acceleration.timestamp + '<br />';
+            }
+
+            function onError() {
+                alert('onError!');
+            }
+
+            var options = { frequency: 3000 };  // Update every 3 seconds
+
+            var watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
+        }
+        
+        function myClear() {
+            if (watchID)
+            {
+                navigator.accelerometer.clearWatch(watchID);
+            }
+            watchID = null;
+
+            alert("结束观察完成!");
+        }
+
+    </script>
+</head>
+<body>
+<h1>加速传感器</h1>
+<input type="button" style="width: 100%; height: 45px" value="获取加速度" onclick="myCurr()">
+<input type="button" style="width: 100%; height: 45px" value="观察加速度" onclick="myWatch()">
+<input type="button" style="width: 100%; height: 45px" value="结束观察" onclick="myClear()">
+<div id="display_content"></div>
+</body>
+</html>
